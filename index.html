@@ -21,17 +21,21 @@
         <button id="change-button" class="hidden">変更</button>
       </div>
 
-      <div style="display: flex">
+      <div id="overall-p" style="display: flex" class="hidden">
         <section id="l-panel" style="min-width: 10%">
-          <button id="start-button" class="hidden">集計する</button>
+          <button id="start-button">集計する</button>
           <div>
             <div>チャンネル</div>
             <div id="channel-list"></div>
           </div>
+          <div>
+            <div>キャラクター</div>
+            <div id="chara-list"></div>
+          </div>
         </section>
         <section id="r-panel">
           <!--集計-->
-          <div id="checker-area" class="hidden"></div>
+          <div id="checker-area"></div>
         </section>
       </div>
     </main>
