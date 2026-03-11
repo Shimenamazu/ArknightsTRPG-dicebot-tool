@@ -80,9 +80,24 @@ async function handleFiles(file) {
     text_log.push([channel, name, mes]);
   });
 
+  for (const i in channels) {
+    const panel = document.createElement("div");
+    panel.class = "channel-panel";
+    const label = document.createElement("label");
+    const cb = document.createElement("input");
+    panel.classList.add("channel-panel");
+    cb.type = "checkbox";
+    cb.value = i;
+    cb.classList.add("channel-btn");
+    cb.checked = true;
+    label.appendChild(cb);
+    label.append(channels[i]);
+    panel.appendChild(label);
+    channel_list.appendChild(panel);
+  }
+
   //内容変更
   selected_file.textContent = file.name;
-  channel_list.textContent = channels;
   chara_list.textContent = "未確認";
   checker_area.textContent = "未集計";
 }
@@ -98,7 +113,11 @@ change_button.addEventListener("click", () => {
 
 //集計ボタン
 start_button.addEventListener("click", () => {
-  checker(channels);
+  const selected = [...document.querySelectorAll(".channel-btn:checked")].map(
+    (cb) => channels[cb.value],
+  );
+
+  checker(selected);
 });
 
 let charas = [];
@@ -116,9 +135,10 @@ function checker(cond_c) {
   charas = [];
   rolls = {};
   const targets = text_log.filter((t) => cond_c.includes(t[0]));
+  chara_list.textContent = "";
 
   targets.forEach((e) => {
-    console.log(e[1] + ":" + e[2]);
+    //console.log(e[1] + ":" + e[2]);
     const check1 = e[2].match(/\((\d+)?AD(100)?\<\=(\d+)\) ＞ (\d+) ＞/);
     if (check1) {
       pushchara(e[1], 1, 3 - is_suc(Number(check1[3]), Number(check1[4])));
@@ -126,15 +146,27 @@ function checker(cond_c) {
   });
 
   if (charas.length > 0) {
-    chara_list.textContent = charas;
-    let tmp = "";
-    for (const e in rolls) {
-      tmp += rolls[e].name + ":" + rolls[e].sr + "\n";
+    for (const i in charas) {
+      const panel = document.createElement("div");
+      panel.class = "chara-panel";
+      const label = document.createElement("label");
+      const cb = document.createElement("input");
+      panel.classList.add("chara-panel");
+      cb.type = "checkbox";
+      cb.value = i;
+      cb.classList.add("chara-btn");
+      cb.checked = true;
+      cb.addEventListener("change", show_result);
+      label.appendChild(cb);
+      label.append(charas[i]);
+      panel.appendChild(label);
+      chara_list.appendChild(panel);
+
+      show_result();
     }
-    checker_area.textContent = tmp;
   } else {
-    chara_list.textContent = "0";
-    checker_area.textContent = "no";
+    chara_list.textContent = "-";
+    checker_area.textContent = "該当無し";
   }
 }
 
@@ -165,4 +197,18 @@ function is_suc(tar, roll) {
     }
     return 0;
   }
+}
+
+function show_result() {
+  const tar_chara = [...document.querySelectorAll(".chara-btn:checked")].map(
+    (cb) => charas[cb.value],
+  );
+
+  let tmp = "";
+  for (const e in rolls) {
+    if (tar_chara.includes(rolls[e].name)) {
+      tmp += rolls[e].name + ":" + rolls[e].sr + "\n";
+    }
+  }
+  checker_area.textContent = tmp;
 }

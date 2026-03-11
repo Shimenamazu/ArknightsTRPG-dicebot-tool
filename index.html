@@ -25,11 +25,14 @@
         <section id="l-panel" style="min-width: 10%">
           <button id="start-button">集計する</button>
           <div>
-            <div>チャンネル</div>
-            <div id="channel-list"></div>
+            <div>集計するチャンネル</div>
+            <div
+              id="channel-list"
+              style="display: flex; flex-direction: column"
+            ></div>
           </div>
           <div>
-            <div>キャラクター</div>
+            <div>表示するキャラクター</div>
             <div id="chara-list"></div>
           </div>
         </section>
@@ -56,6 +59,10 @@
 
       #checker-area {
         white-space: pre-wrap;
+      }
+
+      .channel-panel {
+        display: flex;
       }
 
       .hidden {
