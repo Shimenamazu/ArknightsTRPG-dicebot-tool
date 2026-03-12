@@ -23,7 +23,24 @@
 
       <div id="overall-p" style="display: flex" class="hidden">
         <section id="l-panel" style="min-width: 10%">
-          <button id="start-button">集計する</button>
+          <div>
+            <div>オプション</div>
+            <div id="option-list" style="display: flex; flex-direction: column">
+              <label
+                ><input
+                  type="checkbox"
+                  class="option-btn"
+                  id="p-cri"
+                />ピッタリクリティカルを考慮する</label
+              ><label
+                ><input
+                  type="checkbox"
+                  class="option-btn"
+                  id="g-dice"
+                />汎用ダイスも集計する</label
+              >
+            </div>
+          </div>
           <div>
             <div>集計するチャンネル</div>
             <div
@@ -31,6 +48,7 @@
               style="display: flex; flex-direction: column"
             ></div>
           </div>
+          <button id="start-button">集計する</button>
           <div>
             <div>表示するキャラクター</div>
             <div id="chara-list"></div>
@@ -38,6 +56,26 @@
         </section>
         <section id="r-panel">
           <!--集計-->
+          <div id="pre-checker-area">
+            <span class="rp-1" onclick="setSort('name')"
+              >キャラクター(<span class="sort" id="s-1">-</span>)</span
+            >
+            <span class="rp-2" onclick="setSort('roll')"
+              >総ロール回数(<span class="sort" id="s-2">-</span>)</span
+            >
+            <span class="rp-3" onclick="setSort('cri')"
+              >クリティカル回数(<span class="sort" id="s-3">-</span>)</span
+            >
+            <span class="rp-4" onclick="setSort('suc')"
+              >成功回数(<span class="sort" id="s-4">-</span>)</span
+            >
+            <span class="rp-5" onclick="setSort('fail')"
+              >失敗回数(<span class="sort" id="s-5">-</span>)</span
+            >
+            <span class="rp-6" onclick="setSort('err')"
+              >エラー回数(<span class="sort" id="s-6">-</span>)</span
+            >
+          </div>
           <div id="checker-area"></div>
         </section>
       </div>
@@ -55,10 +93,6 @@
         justify-content: center;
         text-align: center;
         cursor: pointer;
-      }
-
-      #checker-area {
-        white-space: pre-wrap;
       }
 
       .channel-panel {

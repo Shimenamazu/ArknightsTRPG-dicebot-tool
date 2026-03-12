@@ -1,0 +1,148 @@
+/* ===== 基本 ===== */
+
+body {
+  font-family:
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    sans-serif;
+  background: #1e1e1e;
+  color: #e6e6e6;
+  margin: 0;
+  padding: 30px;
+}
+
+main {
+  max-width: 1200px;
+  margin: auto;
+}
+
+h1 {
+  margin-bottom: 25px;
+  font-size: 24px;
+}
+
+/* ===== ドロップエリア ===== */
+
+#drop-area {
+  background: #2a2a2a;
+  border-radius: 8px;
+  transition: 0.15s;
+}
+
+#drop-area:hover {
+  border-color: #aaa;
+  background: #303030;
+}
+
+/* ===== ファイル表示 ===== */
+
+#selected-file {
+  margin-right: 10px;
+  font-weight: bold;
+}
+
+#change-button {
+  padding: 4px 10px;
+  cursor: pointer;
+}
+
+/* ===== 全体レイアウト ===== */
+
+#overall-p {
+  margin-top: 20px;
+  gap: 20px;
+}
+
+/* ===== 左パネル ===== */
+
+#l-panel {
+  background: #2a2a2a;
+  padding: 15px;
+  border-radius: 8px;
+}
+
+#l-panel > div {
+  margin-bottom: 20px;
+}
+
+#l-panel > div > div:first-child {
+  font-weight: bold;
+  margin-bottom: 6px;
+}
+
+/* チェックボックスリスト */
+
+#option-list label,
+#channel-list label,
+#chara-list label {
+  cursor: pointer;
+  padding: 2px 0;
+}
+
+.option-btn,
+.channel-btn,
+.chara-btn {
+  margin-right: 6px;
+}
+
+/* 集計ボタン */
+
+#start-button {
+  width: 100%;
+  margin-bottom: 20px;
+  padding: 6px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+/* ===== 右パネル ===== */
+
+#r-panel {
+  flex: 1;
+  background: #2a2a2a;
+  padding: 15px;
+  border-radius: 8px;
+}
+
+/* ===== ヘッダー ===== */
+
+#pre-checker-area {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr 1fr 1fr 1fr;
+  font-weight: bold;
+  border-bottom: 1px solid #555;
+  padding-bottom: 6px;
+  margin-bottom: 6px;
+}
+
+/* ===== 結果行 ===== */
+
+.result-panel {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr 1fr 1fr 1fr;
+  padding: 4px 0;
+  border-bottom: 1px solid #333;
+}
+
+.result-panel:hover {
+  background: #303030;
+}
+
+/* ===== 共通セル ===== */
+
+.rp-1,
+.rp-2,
+.rp-3,
+.rp-4,
+.rp-5,
+.rp-6 {
+  padding-right: 8px;
+  display: block;
+}
+
+/* キャラ名だけ太字 */
+
+.rp-1 {
+  font-weight: bold;
+}

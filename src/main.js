@@ -82,7 +82,7 @@ async function handleFiles(file) {
 
   for (const i in channels) {
     const panel = document.createElement("div");
-    panel.class = "channel-panel";
+    panel.classList.add("channel-panel");
     const label = document.createElement("label");
     const cb = document.createElement("input");
     panel.classList.add("channel-panel");
@@ -104,6 +104,7 @@ async function handleFiles(file) {
 
 //変更ボタン
 change_button.addEventListener("click", () => {
+  document.querySelectorAll(".sort").forEach((s) => (s.textContent = "-"));
   drop_area.classList.remove("hidden");
   selected_file.classList.add("hidden");
   change_button.classList.add("hidden");
@@ -122,11 +123,24 @@ start_button.addEventListener("click", () => {
 
 let charas = [];
 let rolls = {};
+let sort_type = "name";
+let sort_desc = false;
+let sort_arrow = "↑";
 class Stat {
   constructor(name) {
     this.name = name;
     this.sr = [0, 0, 0, 0, 0];
     charas.push(name);
+  }
+
+  cal_p() {
+    this.p = [
+      0,
+      ((this.sr[1] / this.sr[0]) * 100).toFixed(1),
+      ((this.sr[2] / this.sr[0]) * 100).toFixed(1),
+      ((this.sr[3] / this.sr[0]) * 100).toFixed(1),
+      ((this.sr[4] / this.sr[0]) * 100).toFixed(1),
+    ];
   }
 }
 
@@ -134,21 +148,39 @@ class Stat {
 function checker(cond_c) {
   charas = [];
   rolls = {};
+  sort_type = "name";
+  sort_desc = false;
   const targets = text_log.filter((t) => cond_c.includes(t[0]));
   chara_list.textContent = "";
+  const g_dice = document.getElementById("g-dice").checked;
+
+  document.querySelectorAll(".sort").forEach((s) => (s.textContent = "-"));
 
   targets.forEach((e) => {
     //console.log(e[1] + ":" + e[2]);
-    const check1 = e[2].match(/\((\d+)?AD(100)?\<\=(\d+)\) ＞ (\d+) ＞/);
+    const check1 = [
+      ...e[2].matchAll(/\((\d+)?AD(100)?\<\=(\d+)\) ＞ (\d+) ＞/g),
+    ];
     if (check1) {
-      pushchara(e[1], 1, 3 - is_suc(Number(check1[3]), Number(check1[4])));
+      check1.forEach((r) =>
+        pushchara(e[1], 1, 3 - is_suc(Number(r[3]), Number(r[4]))),
+      );
+    }
+
+    if (g_dice) {
+      const check2 = [...e[2].matchAll(/\((1)?D100\<\=(\d+)\) ＞ (\d+) ＞/g)];
+      if (check2) {
+        check2.forEach((r) =>
+          pushchara(e[1], 1, 3 - is_suc(Number(r[2]), Number(r[3]))),
+        );
+      }
     }
   });
 
   if (charas.length > 0) {
     for (const i in charas) {
       const panel = document.createElement("div");
-      panel.class = "chara-panel";
+      panel.classList.add("chara-panel");
       const label = document.createElement("label");
       const cb = document.createElement("input");
       panel.classList.add("chara-panel");
@@ -187,7 +219,10 @@ function pushchara(name, type, result) {
 
 function is_suc(tar, roll) {
   if (roll <= tar) {
-    if (tar == roll || tar <= 10) {
+    if (roll <= 10) {
+      return 2;
+    }
+    if (document.getElementById("p-cri").checked && tar == roll) {
       return 2;
     }
     return 1;
@@ -200,15 +235,109 @@ function is_suc(tar, roll) {
 }
 
 function show_result() {
+  checker_area.textContent = "";
   const tar_chara = [...document.querySelectorAll(".chara-btn:checked")].map(
     (cb) => charas[cb.value],
   );
+  const array = Object.values(rolls);
 
-  let tmp = "";
-  for (const e in rolls) {
-    if (tar_chara.includes(rolls[e].name)) {
-      tmp += rolls[e].name + ":" + rolls[e].sr + "\n";
+  array.sort((a, b) => {
+    let v1;
+    let v2;
+
+    switch (sort_type) {
+      case "name":
+        v1 = a.name;
+        v2 = b.name;
+        document.getElementById("s-1").textContent = sort_arrow;
+        break;
+
+      case "roll":
+        v1 = a.p[0];
+        v2 = b.p[0];
+        document.getElementById("s-2").textContent = sort_arrow;
+        break;
+
+      case "cri":
+        v1 = a.p[1];
+        v2 = b.p[1];
+        document.getElementById("s-3").textContent = sort_arrow;
+        break;
+
+      case "suc":
+        v1 = a.p[2];
+        v2 = b.p[2];
+        document.getElementById("s-4").textContent = sort_arrow;
+        break;
+
+      case "fail":
+        v1 = a.p[3];
+        v2 = b.p[3];
+        document.getElementById("s-5").textContent = sort_arrow;
+        break;
+
+      case "err":
+        v1 = a.p[4];
+        v2 = b.p[4];
+        document.getElementById("s-6").textContent = sort_arrow;
+        break;
+    }
+
+    if (v1 < v2) return sort_desc ? 1 : -1;
+    if (v1 > v2) return sort_desc ? -1 : 1;
+    return 0;
+  });
+
+  for (const r of array) {
+    if (tar_chara.includes(r.name)) {
+      r.cal_p();
+
+      const panel = document.createElement("div");
+      panel.classList.add("result-panel");
+      const span1 = document.createElement("span");
+      span1.classList.add("rp-1");
+      span1.textContent = r.name;
+      const span2 = document.createElement("span");
+      span2.classList.add("rp-2");
+      span2.textContent = r.sr[0] + "回";
+      const span3 = document.createElement("span");
+      span3.classList.add("rp-3");
+      span3.textContent = r.sr[1] + "回(" + r.p[1] + "%)";
+      const span4 = document.createElement("span");
+      span4.classList.add("rp-4");
+      span4.textContent = r.sr[2] + "回(" + r.p[2] + "%)";
+      const span5 = document.createElement("span");
+      span5.classList.add("rp-5");
+      span5.textContent = r.sr[3] + "回(" + r.p[3] + "%)";
+      const span6 = document.createElement("span");
+      span6.classList.add("rp-6");
+      span6.textContent = r.sr[4] + "回(" + r.p[4] + "%)";
+      panel.appendChild(span1);
+      panel.appendChild(span2);
+      panel.appendChild(span3);
+      panel.appendChild(span4);
+      panel.appendChild(span5);
+      panel.appendChild(span6);
+      checker_area.appendChild(panel);
     }
   }
-  checker_area.textContent = tmp;
+}
+
+function setSort(type) {
+  if (sort_type === type) {
+    sort_desc = !sort_desc;
+  } else {
+    sort_type = type;
+    sort_desc = true;
+  }
+
+  if (sort_desc) {
+    sort_arrow = "↑";
+  } else {
+    sort_arrow = "↓";
+  }
+
+  document.querySelectorAll(".sort").forEach((s) => (s.textContent = "-"));
+
+  show_result();
 }
