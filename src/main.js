@@ -112,6 +112,10 @@ change_button.addEventListener("click", () => {
   overall_p.classList.add("hidden");
 });
 
+let sort_type = "name";
+let sort_desc = true;
+let sort_arrow = "↑";
+
 //集計ボタン
 start_button.addEventListener("click", () => {
   const selected = [...document.querySelectorAll(".channel-btn:checked")].map(
@@ -123,9 +127,6 @@ start_button.addEventListener("click", () => {
 
 let charas = [];
 let rolls = {};
-let sort_type = "name";
-let sort_desc = false;
-let sort_arrow = "↑";
 class Stat {
   constructor(name) {
     this.name = name;
@@ -149,7 +150,7 @@ function checker(cond_c) {
   charas = [];
   rolls = {};
   sort_type = "name";
-  sort_desc = false;
+  sort_desc = true;
   const targets = text_log.filter((t) => cond_c.includes(t[0]));
   chara_list.textContent = "";
   const g_dice = document.getElementById("g-dice").checked;
@@ -247,14 +248,14 @@ function show_result() {
 
     switch (sort_type) {
       case "name":
-        v1 = a.name;
-        v2 = b.name;
+        v1 = b.name;
+        v2 = a.name;
         document.getElementById("s-1").textContent = sort_arrow;
         break;
 
       case "roll":
-        v1 = a.p[0];
-        v2 = b.p[0];
+        v1 = a.sr[0];
+        v2 = b.sr[0];
         document.getElementById("s-2").textContent = sort_arrow;
         break;
 
@@ -325,6 +326,7 @@ function show_result() {
 
 function setSort(type) {
   if (sort_type === type) {
+    console.log("t = n_t");
     sort_desc = !sort_desc;
   } else {
     sort_type = type;
