@@ -326,7 +326,7 @@ function show_result() {
 
 function setSort(type) {
   if (sort_type === type) {
-    console.log("t = n_t");
+    //console.log("t = n_t");
     sort_desc = !sort_desc;
   } else {
     sort_type = type;
